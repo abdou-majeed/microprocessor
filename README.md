@@ -1,9 +1,10 @@
-# microprocessor
+# microprocessor (in progress)
 
 Design of a 4-bit microprocessor from first principles, down to logic gates.
+(This repository contains documents and designs, describing the components and working principle of a microprocessor)
 
-This is a personal project I started during my BSc in Electrical/Electronic Engineering
-at KNUST (Ghana). The goal is to design a complete 4-bit computer: ALU, registers,
+This is a personal project I started during my Electrical Engineering studies.
+The goal is to design a complete 4-bit computer: ALU, registers,
 buses, control unit, memory interface, instruction set, and fetch-execute cycle,
 all built from basic logic gates.
 
