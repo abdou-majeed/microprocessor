@@ -1,7 +1,6 @@
 # microprocessor (in progress)
 
 Design of a 4-bit microprocessor from first principles, down to logic gates.
-(This repository contains documents and designs, describing the components and working principle of a microprocessor)
 
 This is a personal project I started during my Electrical Engineering studies.
 The goal is to design a complete 4-bit computer: ALU, registers,
@@ -54,90 +53,52 @@ The CPU contains:
 | 1111 | HLT      | Halt processor |
 
 
-## Repository structure
-
-```
-microprocessor/
-|-- README.md
-|-- docs/
-|   |-- MicroProcessor_2021.pdf          # Revised documentation (February 2021)
-|   |-- MicroP_Part_A_2019.pdf           # Original documentation (January 2019)
-|   |-- MicroP_Part_B_2019.pdf           # Circuit descriptions
-|   +-- MicroP_Presentation_2019.pptx    # Presentation slides
-+-- circuits/
-    |-- ALU_1_AND.logicly
-    |-- ALU_2_OR.logicly
-    |-- ALU_3_NOT.logicly
-    |-- ALU_4_SLT.logicly
-    |-- ALU_5_INA.logicly
-    |-- ALU_6_DCA.logicly
-    |-- ALU_7_ADD.logicly
-    |-- ALU_8_SUB.logicly
-    |-- ALU_SUB.logicly
-    |-- Register.logicly
-    |-- CU.logicly
-    |-- Complete_Decoder.logicly
-    |-- Decrement_Decoder.logicly
-    |-- Set_Less_Than_Decoder.logicly
-    |-- Complement_A_Decoder.logicly
-    |-- AND.logicly
-    |-- AND_with_Tri-State_Buffer.logicly
-    |-- AND_OR_with_Tri-State_Buffer.logicly
-    |-- Decoding_with_AND.logicly
-    |-- Decoding_with_AND_OR.logicly
-    |-- Synchronization_1.logicly
-    |-- Synchronization_2.logicly
-    +-- Zero_Flag.logicly
-```
-
-
 ## Circuit files
 
-The circuits are built in [Logicly](https://logic.ly/), a digital logic simulator.
-A free trial is available. The files are organized by component:
+The `circuits/` directory contains gate-level implementations of every component,
+organized into subdirectories for the ALU, decoders, tri-state buffers, and control logic.
+PDF screenshots of each circuit are available in `circuits/screenshots/`.
 
-| Group | Files | Description |
-|-------|-------|-------------|
-| **ALU operations** | ALU_1 through ALU_8, ALU_SUB | Individual arithmetic and logic operations at the gate level. |
-| **Decoders** | Decrement, SLT, Complement_A, Complete | Instruction decoders that route control signals to the correct ALU operation. |
-| **Tri-state buffers** | AND, AND_with_Tri-State_Buffer, AND_OR variants | Bus isolation circuits that prevent components from interfering with each other. |
-| **Control and state** | CU, Register, Synchronization_1, Synchronization_2, Zero_Flag | Control unit, register design, clock synchronization, and status flags. |
+The `.logicly` files can be opened and simulated interactively in
+[Logicly's free online simulator](https://logic.ly/demo/) (File → Open).
+Running the simulations is much better than looking at the static PDFs —
+you can toggle inputs, watch signals propagate, and step through the clock.
 
-The circuits build on each other: decoders use basic gates, the ALU uses decoders
-and tri-state buffers, and the control unit orchestrates everything.
 
 
 ## Example program
 
-A program to compute 4 × 3 = 12 using repeated addition:
+Multiplication of 4 and 3 by repeated addition. The program decrements
+one factor as a loop counter while accumulating the other. The result
+ends up at memory location 0x2. Starting at 0x0:
 
 ```asm
-MOV 4       ; Load 4 into reg A
-DEA         ; Decrement: reg A = 3 (loop counter)
-LDA 0       ; Store counter at memory 0x0
-MOV 3       ; Load 3 into reg A
-LDA 1       ; Store 3 at memory 0x1
-LDA 2       ; Store 3 at memory 0x2 (accumulator)
-ADD 2       ; reg A = reg A + [0x2]
-LDA 2       ; Store partial result
-STA 0       ; Load counter from memory
-DEA         ; Decrement counter
-JZ done     ; If zero, jump to halt
-LDA 0       ; Store updated counter
-STA 1       ; Load the addend
-JMP ADD     ; Jump back to addition
-HLT         ; Result (12) is at memory 0x2
+0x0	MOV 4		; Move 4 to reg A
+0x2	DEA		; Decrement reg A. reg A = 3
+0x3	LDA 0		; Store the content of reg A in memory location 0x0
+0x5	MOV 3		; Move 3 to reg A
+0x7	LDA 1		; Store the content of reg A in memory location 0x1
+; The content of reg A is still 3
+0x9	LDA 2		; Store the content of reg A in memory location 0x2
+			; [0x0]=3 [0x1]=3 [0x2]=3
+0xB	ADD 2		; Add reg A and the content of memory location 0x2 (the number 3)
+0xD	LDA 2		; Store the content of reg A in memory location 0x2
+			; [0x0]=3 [0x1]=3 [0x2]=6
+0xF	STA 0		; Set A with the content of memory location 0x0 (the number 3)
+0x11	DEA		; Decrement reg A
+			; reg A = 2
+0x12	JZ 26		; If Zero flag is True, then jump to memory location 0x1A
+0x14	LDA 0		; Store the content of reg A in memory location 0x0
+			; [0x0]=2 [0x1]=3 [0x2]=6
+0X16	STA 1		; Set A with the content of memory location 0x1 (the number 3)
+0x18	JMP 11	; Jump to memory location 0xB
+0x1A	HLT		; HALT
+			; the result is in memory location 0x2
 ```
 
 
-## Status
 
-This is a work in progress. The documentation and ALU circuits are complete.
-The control unit, register, and memory circuits are partially implemented.
-The full integration into a working 4-bit computer is not yet done.
+## Roadmap
 
-
-## Versions
-
-- **January 2019**: first version of the documentation and circuit designs.
-- **February 2021**: revised version correcting mistakes found in the original.
+- Complete the circuit for the full fetch-execute cycle.
+- Write a simple assembler that translates mnemonics to binary.
