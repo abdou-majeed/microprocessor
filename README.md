@@ -65,7 +65,6 @@ Running the simulations is much better than looking at the static PDFs —
 you can toggle inputs, watch signals propagate, and step through the clock.
 
 
-
 ## Example program
 
 Multiplication of 4 and 3 by repeated addition. The program decrements
@@ -73,32 +72,36 @@ one factor as a loop counter while accumulating the other. The result
 ends up at memory location 0x2. Starting at 0x0:
 
 ```asm
-0x0	MOV 4		; Move 4 to reg A
-0x2	DEA		; Decrement reg A. reg A = 3
-0x3	LDA 0		; Store the content of reg A in memory location 0x0
-0x5	MOV 3		; Move 3 to reg A
-0x7	LDA 1		; Store the content of reg A in memory location 0x1
-; The content of reg A is still 3
-0x9	LDA 2		; Store the content of reg A in memory location 0x2
-			; [0x0]=3 [0x1]=3 [0x2]=3
-0xB	ADD 2		; Add reg A and the content of memory location 0x2 (the number 3)
-0xD	LDA 2		; Store the content of reg A in memory location 0x2
-			; [0x0]=3 [0x1]=3 [0x2]=6
-0xF	STA 0		; Set A with the content of memory location 0x0 (the number 3)
-0x11	DEA		; Decrement reg A
-			; reg A = 2
-0x12	JZ 26		; If Zero flag is True, then jump to memory location 0x1A
-0x14	LDA 0		; Store the content of reg A in memory location 0x0
-			; [0x0]=2 [0x1]=3 [0x2]=6
-0X16	STA 1		; Set A with the content of memory location 0x1 (the number 3)
-0x18	JMP 11	; Jump to memory location 0xB
-0x1A	HLT		; HALT
-			; the result is in memory location 0x2
+0x0	 MOV 4		; Move 4 to reg A
+0x2	 DEA		; Decrement reg A. reg A = 3
+0x3	 LDA 0		; Store the content of reg A in memory location 0x0
+0x5	 MOV 3		; Move 3 to reg A
+0x7	 LDA 1		; Store the content of reg A in memory location 0x1
+				; The content of reg A is still 3
+0x9	 LDA 2		; Store the content of reg A in memory location 0x2
+				; [0x0]=3 [0x1]=3 [0x2]=3
+0xB	 ADD 2		; Add reg A and the content of memory location 0x2 (the number 3)
+0xD	 LDA 2		; Store the content of reg A in memory location 0x2
+				; [0x0]=3 [0x1]=3 [0x2]=6
+0xF	 STA 0		; Set A with the content of memory location 0x0 (the number 3)
+0x11 DEA		; Decrement reg A
+				; reg A = 2
+0x12 JZ 26		; If Zero flag is True, then jump to memory location 0x1A
+0x14 LDA 0		; Store the content of reg A in memory location 0x0
+				; [0x0]=2 [0x1]=3 [0x2]=6
+0X16 STA 1		; Set A with the content of memory location 0x1 (the number 3)
+0x18 JMP 11		; Jump to memory location 0xB
+0x1A HLT		; HALT
+				; the result is in memory location 0x2
 ```
-
 
 
 ## Roadmap
 
 - Complete the circuit for the full fetch-execute cycle.
 - Write a simple assembler that translates mnemonics to binary.
+
+
+## Acknowledgement
+
+You are currently reading [Agentica](https://agentica.symbolica.ai/).
